@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { JarvisServiceService } from './jarvis-service.service';
+import { JarvisService } from './jarvis.service';
 
-describe('JarvisServiceService', () => {
+describe('JarvisService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: JarvisServiceService = TestBed.get(JarvisServiceService);
+    const service: JarvisService = TestBed.get(JarvisService);
     expect(service).toBeTruthy();
   });
 });
