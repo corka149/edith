@@ -1,14 +1,26 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>
-      Ionic Blank
+  <ion-toolbar color="primary">
+    <ion-title color="secondary">
+      eDITH
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <div class="ion-padding">
-    The world is your oyster.
-    <p>If you get lost, the <a target="_blank" rel="noopener" href="https://ionicframework.com/docs/">docs</a> will be your guide.</p>
+
   </div>
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-title>
+      jARVIS - availability
+    </ion-title>
+
+    <div slot="secondary">
+        <ion-icon name="checkmark-circle" slot="primary" color="success" *ngIf="isJarvisAvailable"></ion-icon>
+        <ion-icon name="close-circle" slot="primary" color="danger"></ion-icon>
+      </div>
+  </ion-toolbar>
+</ion-footer>
