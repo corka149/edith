@@ -19,7 +19,7 @@ export class JarvisService {
   /**
    * getAllOpenShoppingLists
    */
-  public getAllOpenShoppingLists(): Observable<[ShoppingList]> {
+  public getAllOpenShoppingLists(): Observable<ShoppingList[]> {
     return this.httpClient.get<[ShoppingList]>(`${this.configService.getHost()}/v1/shoppinglists/open`);
   }
 

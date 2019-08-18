@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { JarvisService } from '../services/jarvis.service';
 import { Subscription } from 'rxjs';
+import { ShoppingList } from '../models/shopping-list';
 
 @Component({
   selector: 'app-home',
@@ -13,7 +14,9 @@ export class HomePage implements OnInit, OnDestroy {
 
   private isAvailable = false;
   private jarvisSubscription: Subscription = null;
+  private shoppingListSubscription: Subscription = null;
   private timer = null;
+  private lists: ShoppingList[] = [];
 
   constructor(
     private jarvis: JarvisService
@@ -37,6 +40,12 @@ export class HomePage implements OnInit, OnDestroy {
   get isJarvisAvailable(): boolean {
     return this.isAvailable;
   }
+  set shopplingLists(lists: ShoppingList[]) {
+    this.lists = lists;
+  }
+  get shopplingLists(): ShoppingList[] {
+    return this.lists;
+  }
 
   // ===== ===== ===== =====
   // private methods
@@ -48,6 +57,19 @@ export class HomePage implements OnInit, OnDestroy {
       this.jarvisSubscription.unsubscribe();
     }
     this.jarvisSubscription = this.jarvis.checkReadiness()
-      .subscribe(isReady => this.isAvailable = isReady);
+      .subscribe((isReady) => {
+        this.isAvailable = isReady;
+        this.requestShoppingLists();
+      });
+  }
+
+  private requestShoppingLists() {
+    if (this.isAvailable) {
+      if (!!this.shoppingListSubscription) {
+        this.shoppingListSubscription.unsubscribe();
+      }
+      this.shoppingListSubscription = this.jarvis.getAllOpenShoppingLists()
+          .subscribe(list => this.lists = list);
+    }
   }
 }
