@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { ShoppingList } from '../models/shopping-list';
 import { ConfigService } from './config.service';
 
@@ -29,8 +29,16 @@ export class JarvisService {
    * checkReadiness
    */
   public checkReadiness(): Observable<boolean> {
-    return this.httpClient.get<string>(`${this.configService.getHost()}/v1/shoppinglists/open`).pipe(
-      map(val => !!val)
+    return this.httpClient.get(`${this.configService.getHost()}/v1/system/ready`, {responseType: 'text'}).pipe(
+      catchError(err => this.logErrorAndReturnNull(err)),
+      map(val => val === 'jARVIS is ready')
     );
+  }
+
+  // private methods
+
+  private logErrorAndReturnNull(err: any): Observable<any> {
+    console.error('Error occured', err);
+    return of(null);
   }
 }
