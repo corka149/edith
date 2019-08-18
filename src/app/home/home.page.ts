@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { JarvisService } from '../services/jarvis.service';
 import { Subscription } from 'rxjs';
 import { ShoppingList } from '../models/shopping-list';
+import { BackgroundMode } from '@ionic-native/background-mode';
+
 
 @Component({
   selector: 'app-home',
@@ -19,7 +21,8 @@ export class HomePage implements OnInit, OnDestroy {
   private lists: ShoppingList[] = [];
 
   constructor(
-    private jarvis: JarvisService
+    private jarvis: JarvisService,
+    private backgroundMode: BackgroundMode
   ) { }
 
   // ===== ===== ===== =====
@@ -27,6 +30,7 @@ export class HomePage implements OnInit, OnDestroy {
   // ===== ===== ===== =====
 
   ngOnInit(): void {
+    this.backgroundMode.enable();
     this.timer = setInterval(() => this.pollJarvis(), HomePage.DELAY);
   }
   ngOnDestroy(): void {
