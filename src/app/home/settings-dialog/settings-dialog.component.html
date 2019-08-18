@@ -1,0 +1,27 @@
+<ion-header translucent>
+  <ion-toolbar color="tertiary">
+    <ion-title color="primary">Settings</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="saveAndclosingDialog()" color="success">
+          <ion-icon name="checkmark"></ion-icon>
+      </ion-button>
+      <ion-button (click)="closingDialog()" color="danger">
+        <ion-icon name="exit"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen>
+  <div class="ion-padding">
+    <ion-list lines="full">
+
+      <ion-item>
+        <ion-label position="stacked">jARVIS address
+        </ion-label>
+        <ion-input type="text" [(ngModel)]="jarvisAddress"></ion-input>
+      </ion-item>
+
+    </ion-list>
+  </div>
+</ion-content>

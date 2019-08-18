@@ -2,7 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { JarvisService } from '../services/jarvis.service';
 import { Subscription } from 'rxjs';
 import { ShoppingList } from '../models/shopping-list';
-import { BackgroundMode } from '@ionic-native/background-mode';
+import { BackgroundMode } from '@ionic-native/background-mode/ngx';
+import { ModalController } from '@ionic/angular';
+import { SettingsDialogComponent } from './settings-dialog/settings-dialog.component';
 
 
 @Component({
@@ -22,7 +24,8 @@ export class HomePage implements OnInit, OnDestroy {
 
   constructor(
     private jarvis: JarvisService,
-    private backgroundMode: BackgroundMode
+    private backgroundMode: BackgroundMode,
+    private modalController: ModalController
   ) { }
 
   // ===== ===== ===== =====
@@ -37,7 +40,10 @@ export class HomePage implements OnInit, OnDestroy {
     this.jarvisSubscription.unsubscribe();
   }
 
-  // Accessors
+  // ===== ===== ===== =====
+  // accessor
+  // ===== ===== ===== =====
+
   set isJarvisAvailable(available: boolean) {
     this.isJarvisAvailable = available;
   }
@@ -49,6 +55,17 @@ export class HomePage implements OnInit, OnDestroy {
   }
   get shopplingLists(): ShoppingList[] {
     return this.lists;
+  }
+
+  // ===== ===== ===== =====
+  // public methods
+  // ===== ===== ===== =====
+
+  async showSettings() {
+    const modal = await this.modalController.create({
+      component: SettingsDialogComponent
+    });
+    return await modal.present();
   }
 
   // ===== ===== ===== =====
