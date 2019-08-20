@@ -14,7 +14,7 @@ import { SettingsDialogComponent } from './settings-dialog/settings-dialog.compo
 })
 export class HomePage implements OnInit, OnDestroy {
 
-  private static DELAY = 1 * 60 * 1000;
+  private static DELAY = 10 * 60 * 1000;
 
   private isAvailable = false;
   private jarvisSubscription: Subscription = null;
