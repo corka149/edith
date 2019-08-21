@@ -28,7 +28,14 @@ export class ConfigService {
   }
 
   public setHost(jarvisAddress: string) {
-    localStorage.setItem(ConfigService.JARVIS_ADDRESS, jarvisAddress);
+    this.storage.set(ConfigService.JARVIS_ADDRESS, jarvisAddress);
     this.jarvisAddress = jarvisAddress;
+  }
+
+  /**
+   * getPollingDelay
+   */
+  public getPollingDelay(): number {
+    return 10 * 60 * 1000;
   }
 }

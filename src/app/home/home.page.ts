@@ -5,6 +5,7 @@ import { ShoppingList } from '../models/shopping-list';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 import { ModalController } from '@ionic/angular';
 import { SettingsDialogComponent } from './settings-dialog/settings-dialog.component';
+import { ConfigService } from '../services/config.service';
 
 
 @Component({
@@ -14,8 +15,6 @@ import { SettingsDialogComponent } from './settings-dialog/settings-dialog.compo
 })
 export class HomePage implements OnInit, OnDestroy {
 
-  private static DELAY = 10 * 60 * 1000;
-
   private isAvailable = false;
   private jarvisSubscription: Subscription = null;
   private shoppingListSubscription: Subscription = null;
@@ -24,7 +23,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   constructor(
     private jarvis: JarvisService,
-    private backgroundMode: BackgroundMode,
+    private configService: ConfigService,
     private modalController: ModalController
   ) { }
 
@@ -33,8 +32,8 @@ export class HomePage implements OnInit, OnDestroy {
   // ===== ===== ===== =====
 
   ngOnInit(): void {
-    this.backgroundMode.enable();
-    this.timer = setInterval(() => this.pollJarvis(), HomePage.DELAY);
+    this.jarvis.enableBackground();
+    this.timer = setInterval(() => this.pollJarvis(), this.configService.getPollingDelay());
   }
   ngOnDestroy(): void {
     this.jarvisSubscription.unsubscribe();
@@ -91,6 +90,8 @@ export class HomePage implements OnInit, OnDestroy {
       }
       this.shoppingListSubscription = this.jarvis.getAllOpenShoppingLists()
           .subscribe(list => this.lists = list);
+    } else {
+      this.jarvis.getAllOpenShoppingListsFromCache().then(list => this.lists = list);
     }
   }
 }
