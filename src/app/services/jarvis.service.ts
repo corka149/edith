@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, of, Subscription } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { ShoppingList } from '../models/shopping-list';
 import { ConfigService } from './config.service';
@@ -12,24 +12,24 @@ import { Storage } from '@ionic/storage';
 })
 export class JarvisService {
 
-  private static CACHED_LIST_KEY =  'cachedShoppingList';
+  private static CACHED_LIST_KEY = 'cachedShoppingList';
 
   private isAvailable = false;
-  private jarvisSubscription: Subscription = null;
-  private shoppingListSubscription: Subscription = null;
   private timer = null;
 
   constructor(
     private httpClient: HttpClient,
     private configService: ConfigService,
     private storage: Storage
-    ) { }
+  ) { }
 
   /**
    * getAllOpenShoppingLists
    */
-  public getAllOpenShoppingLists(): Observable<ShoppingList[]> {
-    return this.httpClient.get<[ShoppingList]>(`${this.configService.getHost()}/v1/shoppinglists/open`);
+  public async getAllOpenShoppingLists(): Promise<ShoppingList[]> {
+    const host = await this.configService.getHost();
+    const headers = await this.createBasicAuth();
+    return this.httpClient.get<[ShoppingList]>(`${host}/v1/shoppinglists/open`, {headers}).toPromise();
   }
 
   /**
@@ -37,11 +37,13 @@ export class JarvisService {
    *
    * checkReadiness
    */
-  public checkReadiness(): Observable<boolean> {
-    return this.httpClient.get(`${this.configService.getHost()}/v1/system/ready`, {responseType: 'text'}).pipe(
+  public async checkReadiness(): Promise<boolean> {
+    const host = await this.configService.getHost();
+    const headers = await this.createBasicAuth();
+    return this.httpClient.get(`${host}/v1/system/ready`, { headers, responseType: 'text' }).pipe(
       catchError(err => this.logErrorAndReturnNull(err)),
       map(val => val === 'jARVIS is ready')
-    );
+    ).toPromise();
   }
 
   public startCaching() {
@@ -52,17 +54,23 @@ export class JarvisService {
   }
 
   public getAllOpenShoppingListsFromCache(): Promise<ShoppingList[]> {
-    return  this.storage.get(JarvisService.CACHED_LIST_KEY);
+    return this.storage.get(JarvisService.CACHED_LIST_KEY);
   }
 
   // private methods
+  private async createBasicAuth(): Promise<HttpHeaders> {
+    const headers = new HttpHeaders();
+    const username = await this.configService.getUsername();
+    const password = await this.configService.getPassword();
+    headers.append('Authorization', 'Basic ' + btoa(username + ':' + password));
+    return headers;
+  }
+
+
   private pollJarvis() {
     console.log('Poll jArvis');
-    if (!!this.jarvisSubscription) {
-      this.jarvisSubscription.unsubscribe();
-    }
-    this.jarvisSubscription = this.checkReadiness()
-      .subscribe((isReady) => {
+    this.checkReadiness()
+      .then((isReady) => {
         this.isAvailable = isReady;
         this.requestShoppingLists();
       });
@@ -70,13 +78,10 @@ export class JarvisService {
 
   private requestShoppingLists() {
     if (this.isAvailable) {
-      if (!!this.shoppingListSubscription) {
-        this.shoppingListSubscription.unsubscribe();
-      }
-      this.shoppingListSubscription = this.getAllOpenShoppingLists()
-          .subscribe(list => {
-            this.storage.set(JarvisService.CACHED_LIST_KEY, list);
-          });
+      this.getAllOpenShoppingLists()
+        .then(list => {
+          this.storage.set(JarvisService.CACHED_LIST_KEY, list);
+        });
     }
   }
 

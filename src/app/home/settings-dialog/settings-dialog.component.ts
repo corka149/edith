@@ -16,8 +16,8 @@ export class SettingsDialogComponent implements OnInit {
     private configService: ConfigService
   ) { }
 
-  ngOnInit() {
-    this.jrvAddress = this.configService.getHost();
+  async ngOnInit() {
+    this.jrvAddress =  await this.configService.getHost();
   }
 
   closingDialog() {

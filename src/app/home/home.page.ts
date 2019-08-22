@@ -1,8 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { JarvisService } from '../services/jarvis.service';
-import { Subscription } from 'rxjs';
 import { ShoppingList } from '../models/shopping-list';
-import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 import { ModalController } from '@ionic/angular';
 import { SettingsDialogComponent } from './settings-dialog/settings-dialog.component';
 import { ConfigService } from '../services/config.service';
@@ -13,11 +11,9 @@ import { ConfigService } from '../services/config.service';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage implements OnInit, OnDestroy {
+export class HomePage implements OnInit {
 
   private isAvailable = false;
-  private jarvisSubscription: Subscription = null;
-  private shoppingListSubscription: Subscription = null;
   private timer = null;
   private lists: ShoppingList[] = [];
 
@@ -34,9 +30,6 @@ export class HomePage implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.jarvis.startCaching();
     this.timer = setInterval(() => this.pollJarvis(), this.configService.getPollingDelay());
-  }
-  ngOnDestroy(): void {
-    this.jarvisSubscription.unsubscribe();
   }
 
   // ===== ===== ===== =====
@@ -73,11 +66,8 @@ export class HomePage implements OnInit, OnDestroy {
 
   private pollJarvis() {
     console.log('Poll jArvis');
-    if (!!this.jarvisSubscription) {
-      this.jarvisSubscription.unsubscribe();
-    }
-    this.jarvisSubscription = this.jarvis.checkReadiness()
-      .subscribe((isReady) => {
+    this.jarvis.checkReadiness()
+      .then((isReady) => {
         this.isAvailable = isReady;
         this.requestShoppingLists();
       });
@@ -85,11 +75,8 @@ export class HomePage implements OnInit, OnDestroy {
 
   private requestShoppingLists() {
     if (this.isAvailable) {
-      if (!!this.shoppingListSubscription) {
-        this.shoppingListSubscription.unsubscribe();
-      }
-      this.shoppingListSubscription = this.jarvis.getAllOpenShoppingLists()
-          .subscribe(list => this.lists = list);
+      this.jarvis.getAllOpenShoppingLists()
+          .then(list => this.lists = list);
     } else {
       this.jarvis.getAllOpenShoppingListsFromCache().then(list => this.lists = list);
     }
