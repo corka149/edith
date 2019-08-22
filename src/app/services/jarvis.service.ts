@@ -4,8 +4,6 @@ import { Observable, of, Subscription } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { ShoppingList } from '../models/shopping-list';
 import { ConfigService } from './config.service';
-import { BackgroundMode } from '@ionic-native/background-mode/ngx';
-import { ForegroundService } from '@ionic-native/foreground-service/ngx';
 import { Storage } from '@ionic/storage';
 
 
@@ -24,8 +22,6 @@ export class JarvisService {
   constructor(
     private httpClient: HttpClient,
     private configService: ConfigService,
-    private backgroundMode: BackgroundMode,
-    private foregroundService: ForegroundService,
     private storage: Storage
     ) { }
 
@@ -48,17 +44,11 @@ export class JarvisService {
     );
   }
 
-  public enableBackground() {
-    this.backgroundMode.enable();
-    this.foregroundService.start('eDITH - polling', 'Background Service');
+  public startCaching() {
     if (!!this.timer) {
       this.timer.stop();
     }
     this.timer = setInterval(() => this.pollJarvis(), this.configService.getPollingDelay());
-  }
-  public disableBackground() {
-    this.backgroundMode.disable();
-    this.foregroundService.stop();
   }
 
   public getAllOpenShoppingListsFromCache(): Promise<ShoppingList[]> {

@@ -32,7 +32,7 @@ export class HomePage implements OnInit, OnDestroy {
   // ===== ===== ===== =====
 
   ngOnInit(): void {
-    this.jarvis.enableBackground();
+    this.jarvis.startCaching();
     this.timer = setInterval(() => this.pollJarvis(), this.configService.getPollingDelay());
   }
   ngOnDestroy(): void {
