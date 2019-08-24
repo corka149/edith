@@ -50,7 +50,7 @@ export class JarvisService {
     if (!!this.timer) {
       this.timer.stop();
     }
-    this.timer = setInterval(() => this.pollJarvis(), this.configService.getPollingDelay());
+    this.timer = setInterval(() => this.pollJarvis(), this.configService.getPollingDelay(), this.configService.getPollingDelay());
   }
 
   public getAllOpenShoppingListsFromCache(): Promise<ShoppingList[]> {
@@ -63,7 +63,7 @@ export class JarvisService {
     const username = await this.configService.getUsername();
     const password = await this.configService.getPassword();
     headers.append('Authorization', 'Basic ' + btoa(username + ':' + password));
-    return headers;
+    return new Promise(() => headers);
   }
 
 

@@ -13,7 +13,7 @@
 </ion-header>
 
 <ion-content>
-  <div class="ion-padding" *ngIf="!!shopplingLists.length">
+  <div class="ion-padding" *ngIf="!!shopplingLists && !!shopplingLists.length">
 
     <div *ngFor="let list of shopplingLists">
       <ion-list>
@@ -41,7 +41,7 @@
   </div>
 
   <!-- NO LISTS -->
-  <div class="ion-padding" *ngIf="!shopplingLists.length">
+  <div class="ion-padding" *ngIf="!shopplingLists || !shopplingLists.length">
     <ion-text color="danger">
       No shopping lists
     </ion-text>

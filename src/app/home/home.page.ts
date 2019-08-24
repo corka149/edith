@@ -75,8 +75,7 @@ export class HomePage implements OnInit {
 
   private requestShoppingLists() {
     if (this.isAvailable) {
-      this.jarvis.getAllOpenShoppingLists()
-          .then(list => this.lists = list);
+      this.jarvis.getAllOpenShoppingLists().then(list => this.lists = list);
     } else {
       this.jarvis.getAllOpenShoppingListsFromCache().then(list => this.lists = list);
     }

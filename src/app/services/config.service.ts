@@ -55,6 +55,6 @@ export class ConfigService {
    * getPollingDelay
    */
   public getPollingDelay(): number {
-    return 10 * 60 * 1000;
+    return 1 * 20 * 1000;
   }
 }
