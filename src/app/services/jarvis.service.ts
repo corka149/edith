@@ -39,9 +39,7 @@ export class JarvisService {
    */
   public async checkReadiness(): Promise<boolean> {
     const host = await this.configService.getHost();
-    console.log('DONE: const host = await this.configService.getHost()');
     const headers = await this.createBasicAuth();
-    console.log('DONE: const headers = await this.createBasicAuth()');
     return this.httpClient.get(`${host}/v1/system/ready`, { headers, responseType: 'text' }).pipe(
       catchError(err => this.logErrorAndReturnNull(err)),
       map(val => val === 'jARVIS is ready')
@@ -61,11 +59,9 @@ export class JarvisService {
 
   // private methods
   private async createBasicAuth(): Promise<HttpHeaders> {
-    const headers = new HttpHeaders();
     const username = await this.configService.getUsername();
     const password = await this.configService.getPassword();
-    headers.append('Authorization', 'Basic ' + btoa(username + ':' + password));
-    return new Promise(() => headers);
+    return new HttpHeaders({Authorization: 'Basic ' + btoa(username + ':' + password)});
   }
 
 

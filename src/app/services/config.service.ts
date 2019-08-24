@@ -42,7 +42,7 @@ export class ConfigService {
    * getPollingDelay
    */
   public getPollingDelay(): number {
-    return 1 * 20 * 1000;
+    return 15 * 60 * 1000;
   }
 
   private valueFromForage(key: string): Promise<string> {
