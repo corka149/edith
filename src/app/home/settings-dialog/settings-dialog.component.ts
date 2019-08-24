@@ -10,6 +10,8 @@ import { ConfigService } from 'src/app/services/config.service';
 export class SettingsDialogComponent implements OnInit {
 
   private jrvAddress = '';
+  private uName = '';
+  private pw = '';
 
   constructor(
     private modalCtrl: ModalController,
@@ -17,7 +19,9 @@ export class SettingsDialogComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    this.jrvAddress =  await this.configService.getHost();
+    this.jarvisAddress =  await this.configService.getHost();
+    this.username = await this.configService.getUsername();
+    this.password = await this.configService.getPassword();
   }
 
   closingDialog() {
@@ -25,8 +29,9 @@ export class SettingsDialogComponent implements OnInit {
   }
 
   saveAndclosingDialog() {
-    console.log(`Saved address ${this.jarvisAddress}`);
     this.configService.setHost(this.jarvisAddress);
+    this.configService.setUsername(this.username);
+    this.configService.setPassword(this.password);
     this.modalCtrl.dismiss();
   }
 
@@ -39,5 +44,17 @@ export class SettingsDialogComponent implements OnInit {
   }
   set jarvisAddress(address: string) {
     this.jrvAddress = address;
+  }
+  get username(): string {
+    return this.uName;
+  }
+  set username(username: string) {
+    this.uName = username;
+  }
+  get password(): string {
+    return this.pw;
+  }
+  set password(password: string) {
+    this.pw = password;
   }
 }
