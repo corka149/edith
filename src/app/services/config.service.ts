@@ -38,14 +38,9 @@ export class ConfigService {
     this.storage.set(ConfigService.PASSWORD, password);
   }
 
-  /**
-   * getPollingDelay
-   */
-  public getPollingDelay(): number {
-    return 1 * 60 * 1000;
-  }
-
-  private valueFromForage(key: string): Promise<string> {
-    return this.storage.ready().then(forage => forage.getItem(key));
+  private async valueFromForage(key: string): Promise<string> {
+    const forage = await this.storage.ready();
+    const val = await forage.getItem<string>(key);
+    return !!val ? val : '';
   }
 }

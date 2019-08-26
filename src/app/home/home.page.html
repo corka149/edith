@@ -5,6 +5,7 @@
     </ion-title>
 
     <ion-buttons slot="end">
+      <ion-button (click)="getShoppingLists()"><ion-icon name="sync"></ion-icon></ion-button>
       <ion-button (click)="showSettings()">
         <ion-icon name="construct" color="secondary"></ion-icon>
       </ion-button>
@@ -42,21 +43,16 @@
 
   <!-- NO LISTS -->
   <div class="ion-padding" *ngIf="!shopplingLists || !shopplingLists.length">
-    <ion-text color="danger">
-      No shopping lists
+    <ion-text color="warning">
+      <b>No shopping lists</b>
     </ion-text>
   </div>
 </ion-content>
 
 <ion-footer>
-  <ion-toolbar>
+  <ion-toolbar color="medium">
     <ion-title>
-      jARVIS - availability
+      eDITH - The door to jARVIS
     </ion-title>
-
-    <div slot="secondary">
-      <ion-icon name="checkmark-circle" slot="primary" color="success" *ngIf="!!isJarvisAvailable"></ion-icon>
-      <ion-icon name="close-circle" slot="primary" color="danger" *ngIf="!isJarvisAvailable"></ion-icon>
-    </div>
   </ion-toolbar>
 </ion-footer>
